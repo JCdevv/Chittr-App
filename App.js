@@ -7,6 +7,7 @@ import {createStackNavigator} from '@react-navigation/stack'
 
 import Login from './screens/Login'
 import Home from './screens/Home'
+import Chits from './screens/Chits'
 
 const Stack = createStackNavigator();
 
@@ -25,6 +26,11 @@ class App extends Component {
             name = "Login"
             component = {Login}
           />
+
+          <Stack.Screen
+            name = 'Chits'
+            component = {Chits}
+            />
         </Stack.Navigator>
       </NavigationContainer>
      
