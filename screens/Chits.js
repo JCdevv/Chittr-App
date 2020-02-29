@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FlatList, ActivityIndicator, Text, TextInput, View, Button,Alert } from 'react-native';
+import { ScrollView,FlatList, ActivityIndicator, Text, TextInput, View, Button,Alert } from 'react-native';
 
 class Chits extends Component {
   constructor(props){
@@ -38,19 +38,28 @@ class Chits extends Component {
     }
 
     return(
-      <FlatList
-  
-        data={this.state.chitData}
-        renderItem={
-          ({item}) => 
-          <View>
-            <Text>{item.chit_content}</Text>
-            <Text>Posted By:</Text>
-            <Text>{item.user.given_name}, {item.user.family_name}</Text>
-          </View>
-        }
+      <ScrollView>  
+        
+        <FlatList
+    
+          data={this.state.chitData}
+          renderItem={
+            ({item}) => 
+            <View>
+              <Text>{item.chit_content}</Text>
+              <Text>Posted By:</Text>
+              <Text>{item.user.given_name}, {item.user.family_name}</Text>
+            </View>
+          }
+        /> 
+        
+      <Button
+        onPress={() => {
+          this.props.navigation.navigate('Post')
+        }}
+      title="Post a Chit"
       />
-
+      </ScrollView>
     );
   }
 }

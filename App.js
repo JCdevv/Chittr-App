@@ -8,6 +8,7 @@ import {createStackNavigator} from '@react-navigation/stack'
 import Login from './screens/Login'
 import Home from './screens/Home'
 import Chits from './screens/Chits'
+import Post from './screens/Post'
 
 const Stack = createStackNavigator();
 
@@ -30,6 +31,11 @@ class App extends Component {
           <Stack.Screen
             name = 'Chits'
             component = {Chits}
+            />
+
+          <Stack.Screen
+            name="Post"
+            component={Post}
             />
         </Stack.Navigator>
       </NavigationContainer>
