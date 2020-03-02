@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { FlatList, ActivityIndicator, Text, TextInput, View, Button,Alert } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 class Login extends Component {
   constructor(props){
@@ -29,6 +30,12 @@ class Login extends Component {
       body: res
     })
     .then((response) => {
+      response.json().then(json => {
+        let token = (json)['token']
+        console.log("This is the token: " + token)
+        this.storeToken(token)
+
+      });
       Alert.alert("Logged In!");
       this.props.navigation.navigate('Chits')
     })
@@ -38,6 +45,15 @@ class Login extends Component {
     });
   }
 
+  async storeToken(token){
+    try {
+      await AsyncStorage.setItem('token', token)
+      console.log("Storing token" + token)
+    } catch (e) {
+      console.error(e)
+    }
+  }
+  
    render(){
     return(
     <View>
