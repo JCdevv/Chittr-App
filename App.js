@@ -1,6 +1,5 @@
 import 'react-native-gesture-handler';
 import React, { Component } from 'react';
-import { FlatList, ActivityIndicator, Text, TextInput, View, Button,Alert } from 'react-native';
 
 import {NavigationContainer} from '@react-navigation/native'
 import {createStackNavigator} from '@react-navigation/stack'
@@ -9,6 +8,7 @@ import Login from './screens/Login'
 import Home from './screens/Home'
 import Chits from './screens/Chits'
 import Post from './screens/Post'
+import Create from './screens/Create'
 
 const Stack = createStackNavigator();
 
@@ -36,6 +36,10 @@ class App extends Component {
           <Stack.Screen
             name="Post"
             component={Post}
+            />
+          <Stack.Screen
+            name="Create"
+            component={Create}
             />
         </Stack.Navigator>
       </NavigationContainer>
