@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FlatList, ActivityIndicator, Text, TextInput, View, Button,Alert } from 'react-native';
+import { TextInput, View, Button,Alert } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 
 class Login extends Component {
