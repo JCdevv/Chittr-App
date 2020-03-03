@@ -8,6 +8,8 @@ import Home from './screens/Home'
 import Chits from './screens/Chits'
 import Post from './screens/Post'
 import Create from './screens/Create'
+import Profile from './screens/Profile'
+import Update from './screens/Update'
 
 const Stack = createStackNavigator();
 
@@ -28,7 +30,7 @@ class App extends Component {
           />
 
           <Stack.Screen
-            name = 'Chits'
+            name = "Chits"
             component = {Chits}
             />
 
@@ -39,6 +41,16 @@ class App extends Component {
           <Stack.Screen
             name="Create"
             component={Create}
+            />
+          
+          <Stack.Screen
+            name="Profile"
+            component={Profile}
+            />
+
+          <Stack.Screen
+            name="Update"
+            component={Update}
             />
         </Stack.Navigator>
       </NavigationContainer>

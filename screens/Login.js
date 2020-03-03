@@ -32,6 +32,7 @@ class Login extends Component {
     .then((response) => {
       response.json().then(json => {
         let token = (json)['token']
+        let id = (json)['id']
         console.log("This is the token: " + token)
         this.storeToken(token)
 
@@ -45,10 +46,11 @@ class Login extends Component {
     });
   }
 
-  async storeToken(token){
+  async storeDetails(token,id){
     try {
       await AsyncStorage.setItem('token', token)
-      console.log("Storing token" + token)
+      await AsyncStorage.setItem('id', id)
+
     } catch (e) {
       console.error(e)
     }
