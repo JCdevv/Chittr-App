@@ -8,7 +8,7 @@ class Home extends Component {
       <View>
       <Button
         onPress={() => {
-          
+          this.props.navigation.navigate('Create')
         }}
       title="Create Account"
       />

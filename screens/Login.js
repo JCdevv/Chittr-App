@@ -57,11 +57,15 @@ class Login extends Component {
    render(){
     return(
     <View>
-      <TextInput style={{ height: 40, borderColor: 'gray', borderWidth: 1 }} 
+      <TextInput 
+        placeholder='Email'
+        style={{ height: 40, borderColor: 'gray', borderWidth: 1 }} 
         onChangeText={email => this.setState({email: email})}
       />
 
-      <TextInput style={{ height: 40, borderColor: 'gray', borderWidth: 1 }} 
+      <TextInput 
+        placeholder='Password'
+        style={{ height: 40, borderColor: 'gray', borderWidth: 1 }} 
         onChangeText={password => this.setState({password: password})}
       />
      
