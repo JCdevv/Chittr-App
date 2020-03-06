@@ -59,6 +59,12 @@ class Chits extends Component {
         }}
       title="Post a Chit"
       />
+      <Button
+        onPress={() => {
+          this.props.navigation.navigate('Profile')
+        }}
+      title="View Profile"
+      />
       </ScrollView>
     );
   }

@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 class Login extends Component {
   constructor(props){
-    super(props);
+    super(props)
     this.state ={
       email: '',
       password: ''
@@ -32,9 +32,9 @@ class Login extends Component {
     .then((response) => {
       response.json().then(json => {
         let token = (json)['token']
+        console.log("Token is!: " + token)
         let id = (json)['id']
-        console.log("This is the token: " + token)
-        this.storeToken(token)
+        this.storeDetails(token,id)
 
       });
       Alert.alert("Logged In!");
@@ -49,7 +49,7 @@ class Login extends Component {
   async storeDetails(token,id){
     try {
       await AsyncStorage.setItem('token', token)
-      await AsyncStorage.setItem('id', id)
+      await AsyncStorage.setItem('id', id.toString())
 
     } catch (e) {
       console.error(e)
