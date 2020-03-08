@@ -46,10 +46,11 @@ class Login extends Component {
     });
   }
 
-  async storeDetails(token,id){
+  async storeDetails(token,id,password){
     try {
       await AsyncStorage.setItem('token', token)
       await AsyncStorage.setItem('id', id.toString())
+      await AsyncStorage.setItem('password',this.state.password)
 
     } catch (e) {
       console.error(e)
