@@ -5,23 +5,26 @@ class Home extends Component {
 
    render(){
     return(
-      <View style={{flex: 1,backgroundColor: '#121212'}}>
-      <Button 
-        color = '#3700B3'
-        onPress={() => {
-          this.props.navigation.navigate('Create')
-        }}
-       title="Create Account"
-      />
+      <View style={{flex: 1,backgroundColor: '#121212',justifyContent: 'center', flexDirection: 'column'}}>
+        <View style={{ margin: 20}}>
+          <Button
+            color = '#3700B3'
+            onPress={() => {
+              this.props.navigation.navigate('Create')
+            }}
+          title="Create Account"
+        />
+        </View>
 
-      <Button
-        color = '#3700B3'
-        
-        onPress={() => {
-          this.props.navigation.navigate('Login')
-        }}
-      title="Login"
-      />
+        <View style={{ margin: 20}}>
+        <Button
+          color = '#3700B3'
+          onPress={() => {
+            this.props.navigation.navigate('Login')
+          }}
+        title="Login"
+        />
+      </View>
     </View>
     );
   }

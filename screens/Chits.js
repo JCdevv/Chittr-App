@@ -38,7 +38,7 @@ class Chits extends Component {
     }
 
     return(
-      <ScrollView> 
+      <ScrollView style = {{flex: 1,backgroundColor: '#121212'> 
         <FlatList
 
           data={this.state.chitData}
