@@ -38,10 +38,9 @@ class Chits extends Component {
     }
 
     return(
-      <ScrollView>  
-        
+      <ScrollView> 
         <FlatList
-    
+
           data={this.state.chitData}
           renderItem={
             ({item}) => 
@@ -51,6 +50,7 @@ class Chits extends Component {
               <Text>{item.user.given_name}, {item.user.family_name}</Text>
             </View>
           }
+          keyExtractor={({id}, index) => id}
         /> 
         
       <Button

@@ -10,6 +10,8 @@ import Post from './screens/Post'
 import Create from './screens/Create'
 import Profile from './screens/Profile'
 import Update from './screens/Update'
+import Followers from './screens/Followers'
+import Following from './screens/Following'
 
 const Stack = createStackNavigator();
 
@@ -64,6 +66,16 @@ class App extends Component {
             name="Update"
             component={Update}
             />
+
+          <Stack.Screen
+            name="Followers"
+            component={Followers}
+            /> 
+            
+          <Stack.Screen
+            name="Following"
+            component={Following}
+            /> 
         </Stack.Navigator>
       </NavigationContainer>
      
