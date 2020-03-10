@@ -26,9 +26,8 @@ class Chits extends Component {
 
   componentDidMount(){
     this.getChits();
-} 
-    
-   render(){
+  } 
+  render(){
     if(this.state.isLoading){
       return(
       <View>
@@ -38,34 +37,42 @@ class Chits extends Component {
     }
 
     return(
-      <ScrollView style = {{flex: 1,backgroundColor: '#121212'> 
+      <View style = {{flex: 1,backgroundColor: '#121212'}}> 
         <FlatList
-
           data={this.state.chitData}
           renderItem={
             ({item}) => 
             <View>
-              <Text>{item.chit_content}</Text>
-              <Text>Posted By:</Text>
-              <Text>{item.user.given_name}, {item.user.family_name}</Text>
+              <Text style={{
+                color: '#BB86FC'
+              }}>{item.chit_content}</Text>
+              <Text style={{
+                color: '#BB86FC'
+              }}>Posted By:</Text>
+              <Text style={{
+                color: '#BB86FC'
+              }}>{item.user.given_name}, {item.user.family_name}</Text>
             </View>
           }
           keyExtractor={({id}, index) => id}
         /> 
-        
-      <Button
-        onPress={() => {
-          this.props.navigation.navigate('Post')
-        }}
-      title="Post a Chit"
-      />
-      <Button
-        onPress={() => {
-          this.props.navigation.navigate('Profile')
-        }}
-      title="View Profile"
-      />
-      </ScrollView>
+      <View>
+        <Button
+          color = '#3700B3'
+          onPress={() => {
+            this.props.navigation.navigate('Post')
+          }}
+        title="Post a Chit"
+        />
+        <Button
+          color = '#3700B3'
+          onPress={() => {
+            this.props.navigation.navigate('Profile')
+          }}
+        title="View Profile"
+        />
+        </View>  
+      </View>
     );
   }
 }
