@@ -12,12 +12,12 @@ import Profile from './screens/Profile'
 import Update from './screens/Update'
 import Followers from './screens/Followers'
 import Following from './screens/Following'
+import Photo from './screens/Photo'
 
 const Stack = createStackNavigator();
 
 class App extends Component {
 
-  
    render(){
     return(
       <NavigationContainer>
@@ -33,7 +33,6 @@ class App extends Component {
             },
           }}>
           
-
           <Stack.Screen
             name = "Home"
             component = {Home}
@@ -76,6 +75,10 @@ class App extends Component {
             name="Following"
             component={Following}
             /> 
+
+          <Stack.Screen
+            name="Photo"
+            component={Photo}/>
         </Stack.Navigator>
       </NavigationContainer>
      
