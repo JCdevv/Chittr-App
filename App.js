@@ -14,6 +14,7 @@ import Followers from './screens/Followers'
 import Following from './screens/Following'
 import Photo from './screens/Photo'
 import ProfilePhoto from './screens/ProfilePhoto'
+import Search from './screens/Search'
 
 const Stack = createStackNavigator();
 
@@ -84,6 +85,12 @@ class App extends Component {
             <Stack.Screen
             name="ProfilePhoto"
             component={ProfilePhoto}/>
+
+            <Stack.Screen
+            name="Search"
+            component={Search} 
+            />
+            
         </Stack.Navigator>
       </NavigationContainer>
      

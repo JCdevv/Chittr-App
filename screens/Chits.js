@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView,FlatList, ActivityIndicator, Text, TextInput, View, Button,Alert } from 'react-native';
+import { Image,FlatList, ActivityIndicator, Text, View, Button } from 'react-native';
 
 class Chits extends Component {
   constructor(props){
@@ -42,7 +42,21 @@ class Chits extends Component {
           data={this.state.chitData}
           renderItem={
             ({item}) => 
-            <View>
+            <View style= {{
+              flexDirection: "column", alignItems: "center", marginBottom: 5, backgroundColor: '#3700B3'
+            }}>
+              <Image 
+              style={{
+               height: 75,
+               width: 75,
+               justifyContent: 'center',
+               alignItems: 'center',
+ 
+
+            }}
+            source={{uri: 'http://10.0.2.2:3333/api/v0.0.5/chits/' + item.chit_id + '/photo/'}}
+          />
+
               <Text style={{
                 color: '#BB86FC'
               }}>{item.chit_content}</Text>
@@ -70,6 +84,14 @@ class Chits extends Component {
             this.props.navigation.navigate('Profile')
           }}
         title="View Profile"
+        />
+
+        <Button
+          color = '#3700B3'
+          onPress={() => {
+            this.props.navigation.navigate('Search')
+          }}
+        title="User Search"
         />
         </View>  
       </View>
