@@ -24,7 +24,7 @@ class Post extends Component {
    }
 
    componentDidMount(){
-     this.requestLocationPermission()
+     requestLocationPermission()
      this.makeDirectory()
    }
 
@@ -151,7 +151,7 @@ class Post extends Component {
       <Switch
           title="This is a test"
           style={{marginTop:30}}
-          onValueChange = {this.toggleSwitch}
+          onValueChange = {this.toggleLocation}
           value = {this.state.switchValue}/>      
       <Button
         onPress={() => {
@@ -235,43 +235,17 @@ class Post extends Component {
     }
   }
 
-  async requestLocationPermission(){
-    try {
-      const granted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      {
-        title: 'Lab04 Location Permission',
-        message:'This app requires access to your location.',
-        buttonNeutral: 'Ask Me Later',
-        buttonNegative: 'Cancel',
-        buttonPositive: 'OK',
-      },
-    );
-    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-      this.setState({locationEnabled: true})
-      console.log('You can access location');
-      return true;
-    } else {
-      console.log('Location permission denied');
-      return false;
-    }
-    } catch (err) {
-      console.warn(err);
-    }
-  }
-
   async getLocation(){
     if(!this.state.locationEnabled){
         this.state.locationEnabled = requestLocationPermission();
       }
      Geolocation.getCurrentPosition((position) =>{
-       let json = position
+      let json = position
+    
+      this.setState({long :  json.coords.longitude})
+      this.setState({lat :  json.coords.latitude})
 
-       console.log(json)
-       this.setState({long : JSON.parse(json)['longitude']})
-       this.setState({lat :  JSON.parse(json)['latitude']})
-
-       this.post()
+      this.post()
      },
      (error) =>{
        Alert.alert(error.message)
@@ -284,3 +258,29 @@ class Post extends Component {
 }
 
 export default Post
+
+
+async function requestLocationPermission(){
+  try {
+    const granted = await PermissionsAndroid.request(
+    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    {
+      title: 'Lab04 Location Permission',
+      message:'This app requires access to your location.',
+      buttonNeutral: 'Ask Me Later',
+      buttonNegative: 'Cancel',
+      buttonPositive: 'OK',
+    },
+  );
+  if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+    this.setState({locationEnabled: true})
+    console.log('You can access location');
+    return true;
+  } else {
+    console.log('Location permission denied');
+    return false;
+  }
+  } catch (err) {
+    console.warn(err);
+  }
+}
