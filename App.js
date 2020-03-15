@@ -8,13 +8,15 @@ import Home from './screens/Home'
 import Chits from './screens/Chits'
 import Post from './screens/Post'
 import Create from './screens/Create'
-import Profile from './screens/Profile'
+import MyProfile from './screens/MyProfile'
+import UserProfile from './screens/UserProfile'
 import Update from './screens/Update'
 import Followers from './screens/Followers'
 import Following from './screens/Following'
 import Photo from './screens/Photo'
 import ProfilePhoto from './screens/ProfilePhoto'
 import Search from './screens/Search'
+import Drafts from './screens/Drafts'
 
 const Stack = createStackNavigator();
 
@@ -59,8 +61,13 @@ class App extends Component {
             />
           
           <Stack.Screen
-            name="Profile"
-            component={Profile}
+            name="MyProfile"
+            component={MyProfile}
+            />
+
+          <Stack.Screen
+            name="UserProfile"
+            component={UserProfile}
             />
 
           <Stack.Screen
@@ -89,6 +96,11 @@ class App extends Component {
             <Stack.Screen
             name="Search"
             component={Search} 
+            />
+
+            <Stack.Screen
+            name="Drafts"
+            component={Drafts} 
             />
             
         </Stack.Navigator>

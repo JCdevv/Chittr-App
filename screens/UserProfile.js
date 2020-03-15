@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { ActivityIndicator, Text, View, Button,Alert,Image } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 
-class Profile extends Component {
+class UserProfile extends Component {
     constructor(props){
         super(props);
         this.state ={
@@ -13,7 +13,6 @@ class Profile extends Component {
           isLoading: true,
         }
     }
-
   async getToken(){
     try {
       let token = await AsyncStorage.getItem('token')
@@ -27,33 +26,33 @@ class Profile extends Component {
       }
     }
   componentDidMount(){
-    this.getProfile()
+    let id = this.props.route.params.user_id;
+    this.setState({id: id})
+    this.getProfile(id)
   }
 
-  logout(){
-    this.getToken.then((token) =>{
-      return fetch('http://10.0.2.2:3333/api/v0.0.5/logout/',
+  followUser(){
+    this.getToken().then(token =>{ 
+      return fetch('http://10.0.2.2:3333/api/v0.0.5/user/' +this.state.id +'/follow/',
       {
         method: 'POST',
         headers: {
-          'X-Authorization': token
+          Accept: 'application/json',
+          'X-Authorization' : token
         },
       })
       .then((response) => {
-        Alert.alert("Logged out")
-        this.props.navigation.navigate('Home')
+        
       })
       .catch((error) => {
-        Alert.alert("Error Logging Out!");
+        Alert.alert("Error Grabbing Account Details!");
         console.error(error);
       });
-    })
+    })    
   }
 
-  getProfile(){
-    this.getID().then((id) =>{
-      this.setState({id:id})
-      return fetch('http://10.0.2.2:3333/api/v0.0.5/user/' +id,
+  getProfile(id){
+    return fetch('http://10.0.2.2:3333/api/v0.0.5/user/' +id,
       {
         method: 'GET',
         headers: {
@@ -77,49 +76,20 @@ class Profile extends Component {
         Alert.alert("Error Grabbing Account Details!");
         console.error(error);
       });
-    })
   }
 
-  render(){
-
-    if(this.state.isLoading){
+  render(){  
       return(
-      <View>
-        <ActivityIndicator/>
-      </View>
-      )
-    }
-    else{
-
-    return(
-      <View>
-
+        <View>
           <Image 
-            style={{
-              height: 100,
-              width: 100,
-              justifyContent: 'center',
-              alignItems: 'center',
- 
-
-            }}
+            style={{height: 100,width: 100,justifyContent: 'center', alignItems: 'center', }}
             source={{uri: 'http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.id + '/photo/'}}
           />
 
           <Text>{this.state.given_name}</Text>
           <Text>{this.state.family_name}</Text>
           <Text>{this.state.email}</Text>
-
-          <Button
-          onPress={() => {
-            this.props.navigation.navigate('Update',{
-              givenName: this.state.given_name,
-              familyName: this.state.family_name,
-              email: this.state.email
-            })
-          }}
-        title="Update Profile" 
-        />
+          
         <Button
           onPress={() => {
             this.props.navigation.navigate('Followers',{
@@ -131,6 +101,14 @@ class Profile extends Component {
 
         <Button
           onPress={() => {
+            this.followUser()
+          }}
+        title="Follow" 
+        />
+        
+
+        <Button
+          onPress={() => {
             this.props.navigation.navigate('Following',{
               id: this.state.id
             })
@@ -138,23 +116,18 @@ class Profile extends Component {
         title="Following" 
         />  
 
-        <Button
-          onPress={() => {
-            this.props.navigation.navigate('ProfilePhoto')
-          }}
-        title="Update Profile Picture" 
-        />  
 
         <Button
           onPress={() => {
-            this.props.navigation.navigate('ProfilePhoto')
+            this.followUser()
           }}
-        title="Logout" 
-        />    
+        title="Follow" 
+        />
+           
       </View>
-      );
-    }
+      )
   }
 }
 
-export default Profile
+
+export default UserProfile

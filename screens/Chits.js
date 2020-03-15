@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Image,FlatList, ActivityIndicator, Text, View, Button } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 class Chits extends Component {
   constructor(props){
@@ -9,6 +10,27 @@ class Chits extends Component {
     chitData: []
     }
    }
+
+  profileNavigate(){
+    this.getID().then((id) =>{
+      this.props.navigation.navigate('MyProfile',{
+        user_id: id
+      })
+    })
+  }
+
+  async getID(){
+    try {
+      let id = await AsyncStorage.getItem('id')
+      console.log(id)
+      if(id !== null) {
+        return id
+      }
+      return id
+    } catch(e) {
+      console.error(e)
+    }
+  }
 
   getChits(){
     return fetch("http://10.0.2.2:3333/api/v0.0.5/chits/")
@@ -66,9 +88,20 @@ class Chits extends Component {
               <Text style={{
                 color: '#BB86FC'
               }}>{item.user.given_name}, {item.user.family_name}</Text>
+
+              <Button
+                color = '#3700B3'
+                onPress={() => {
+                  
+                 this.props.navigation.navigate('UserProfile',{
+                    user_id: item.user.user_id
+                 })
+               }}
+              title="Profile"
+             />  
             </View>
           }
-          keyExtractor={({id}, index) => id}
+          keyExtractor={({id}) => id}
         /> 
       <View>
         <Button
@@ -81,7 +114,7 @@ class Chits extends Component {
         <Button
           color = '#3700B3'
           onPress={() => {
-            this.props.navigation.navigate('Profile')
+            this.profileNavigate()
           }}
         title="View Profile"
         />

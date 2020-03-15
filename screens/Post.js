@@ -4,7 +4,7 @@ import Geolocation, { watchPosition } from 'react-native-geolocation-service'
 import AsyncStorage from '@react-native-community/async-storage';
 import { ForceTouchGestureHandler } from 'react-native-gesture-handler';
 
-
+var RNFS = require('react-native-fs');
 
 class Post extends Component {
   constructor(props){
@@ -17,14 +17,15 @@ class Post extends Component {
       switchValue: false,
       isPhoto: false,
       locationEnabled: false,
-      scheduleEnabled: false,
+      draft: false,
+      drafts: '',
       chit_id: ''
     }
    }
 
    componentDidMount(){
      this.requestLocationPermission()
-    
+     this.makeDirectory()
    }
 
    toggleLocation = (value) => {
@@ -32,14 +33,66 @@ class Post extends Component {
     this.setState({locationEnabled: value})
  }
 
-  toggleSchedule = (value) =>{
-    this.setState({switchValue: value})
-    this.setState({scheduleEnabled: value})
-  }
+ makeDirectory = () => {
+  RNFS.mkdir(RNFS.DocumentDirectoryPath+"/config/")
+      .then((result) => {
+          console.log('result', result)
+      })
+      .catch((err) => {
+          console.warn('err', err)
+      })
+}
 
+  readDraft(){
+    RNFS.readDir(RNFS.DocumentDirectoryPath + "/config/") // On Android, use "RNFS.DocumentDirectoryPath" (MainBundlePath is not defined)
+  .then((result) => {
+    console.log('GOT RESULT', result);
 
-  schedulePost(){
+    // stat the first file
+    return Promise.all([RNFS.stat(result[0].path), result[0].path]);
+  })
+  .then((statResult) => {
+    if (statResult[0].isFile()) {
+      // if we have a file, read it
+      return RNFS.readFile(statResult[1], 'utf8');
+    }
+    else{
+      console.log("empty")
+    }
+
+    return 'no file';
+  })
+  .then((contents) => {
+
+    if(contents == ''){
+      this.saveDraft(this.state.content)
+    }
+    else{
+      var currentDraft = this.state.content
+      var finalDrafts = contents += "\n" + currentDraft
+      this.saveDraft(finalDrafts)
+    }
     
+    
+    
+  })
+  .catch((err) => {
+    //Error is thrown due first app start not having drafts.txt, therefore create it..
+    this.saveDraft(this.state.content)
+  });
+  }  
+
+
+  saveDraft(storedDrafts){
+    var path = RNFS.DocumentDirectoryPath + '/config/drafts.txt';
+
+    RNFS.writeFile(path, storedDrafts, 'utf8')
+      .then((success) => {
+      console.log('FILE WRITTEN!');
+    })
+      .catch((err) => {
+      console.log(err.message);
+    });
   }
 
 
@@ -99,15 +152,7 @@ class Post extends Component {
           title="This is a test"
           style={{marginTop:30}}
           onValueChange = {this.toggleSwitch}
-          value = {this.state.switchValue}/>
-
-      <Switch
-          title="This is a test"
-          style={{marginTop:30}}
-          onValueChange = {this.toggleSwitch}
-          value = {this.state.switchValue}/>
-
-      
+          value = {this.state.switchValue}/>      
       <Button
         onPress={() => {
           let time = Math.round(+new Date()/1000)
@@ -145,7 +190,22 @@ class Post extends Component {
         }
       title="Post and Add Photo"
       />
-     </View>
+
+    <Button
+      onPress={() => {
+        this.readDraft()
+      }}
+      title="Save Draft"
+      />
+     
+
+    <Button
+    onPress={() => {
+      this.props.navigation.navigate('Drafts')
+    }}
+    title="View Drafts"
+    />
+    </View>
     );
   }
 
