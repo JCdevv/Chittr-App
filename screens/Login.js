@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { TextInput, View, Button,Alert } from 'react-native';
+import { TextInput, Alert,StyleSheet,Button } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+import { Container,Body,Text,Header } from 'native-base';
 
 class Login extends Component {
   constructor(props){
@@ -59,28 +60,41 @@ class Login extends Component {
   
    render(){
     return(
-    <View>
-      <TextInput 
-        placeholder='Email'
-        style={{ height: 40, borderColor: 'gray', borderWidth: 1 }} 
-        onChangeText={email => this.setState({email: email})}
-      />
+    <Container style={styles.container}>
+      <Text style={styles.text}> Please Enter Your Login Details</Text>
+      <Container style={styles.loginContainer}>
+        <TextInput 
+          placeholder='Email'
+          style={{ height: 40, borderColor: 'gray', borderWidth: 1,color: 'white'}} 
+          placeholderTextColor={'white'}
+          onChangeText={email => this.setState({email: email})}
+        />
 
-      <TextInput 
-        placeholder='Password'
-        style={{ height: 40, borderColor: 'gray', borderWidth: 1 }} 
-        onChangeText={password => this.setState({password: password})}
-      />
-     
-    <Button
-      onPress={() => {
-        this.login();
-      }}
-    title="Login"
-/>
-   </View>
+        <TextInput 
+          placeholder='Password'
+          style={{ height: 40, borderColor: 'gray', borderWidth: 1,color: 'white'}}
+          placeholderTextColor={'white'}
+          onChangeText={password => this.setState({password: password})}
+        />
+      
+        <Button
+          color = '#3700B3'
+          onPress={() => {
+            this.login();
+          }}
+        title="Login"
+          />
+          </Container>
+        
+   </Container>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {backgroundColor: '#121212',justifyContent: 'center'},
+  loginContainer: {marginTop: 0,backgroundColor: '#121212',justifyContent: 'center'},
+  text: {color: '#BB86FC',fontSize: 20,marginTop: 30,textAlign: 'center'}
+});
 
 export default Login

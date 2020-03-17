@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ActivityIndicator, Text, View, Button,Alert,Image } from 'react-native';
+import { ActivityIndicator, Text, View, Button,Alert,Image,FlatList } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 
 class UserProfile extends Component {
@@ -11,6 +11,7 @@ class UserProfile extends Component {
           email: '',
           id: '',
           isLoading: true,
+          chitData: []
         }
     }
   async getToken(){
@@ -25,10 +26,34 @@ class UserProfile extends Component {
         console.error(e)
       }
     }
+
+  async getID(){
+      try {
+        let id = await AsyncStorage.getItem('id')
+        console.log(id)        
+        if(id !== null) {
+          return id
+        }
+        return id
+      } catch(e) {
+        console.error(e)
+      }
+    } 
+
   componentDidMount(){
     let id = this.props.route.params.user_id;
     this.setState({id: id})
     this.getProfile(id)
+
+  }
+
+  
+
+
+  convertToDate(timestamp){
+    console.log(timestamp)
+    var date = new Date(timestamp).toString()
+    return date
   }
 
   followUser(){
@@ -65,7 +90,9 @@ class UserProfile extends Component {
           let fname = (json)['given_name']
           let lname = (json)['family_name']
           let email = (json)['email']
+          let chits = (json)['recent_chits']
           
+          this.setState({chitData: chits})
           this.setState({given_name: fname})
           this.setState({last_name: lname})
           this.setState({email: email})
@@ -116,16 +143,46 @@ class UserProfile extends Component {
         title="Following" 
         />  
 
+      <FlatList
+          data={this.state.chitData}
+          renderItem={
+            ({item}) => 
+            <View style= {{
+              flexDirection: "column", alignItems: "center", marginBottom: 5, backgroundColor: '#3700B3'
+            }}>
+              <Image 
+              style={{
+               height: 75,
+               width: 75,
+               justifyContent: 'center',
+               alignItems: 'center',
+ 
 
-        <Button
-          onPress={() => {
-            this.followUser()
-          }}
-        title="Follow" 
-        />
-           
+            }}
+            source={{uri: 'http://10.0.2.2:3333/api/v0.0.5/chits/' + item.chit_id + '/photo/'}}
+          />
+
+              <Text style={{
+                color: '#BB86FC'
+              }}>{item.chit_content}</Text>
+              
+            <Text style={{
+                color: '#BB86FC'
+              }}>
+              {this.convertToDate(item.timestamp)}
+
+              </Text>
+
+      
+            </View>
+          }
+          keyExtractor={({id}) => id}
+        /> 
+
+
       </View>
-      )
+
+      )  
   }
 }
 

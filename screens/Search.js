@@ -90,13 +90,10 @@ class Search extends Component {
 
         <Button
         onPress={() => {
-          
           this.setState({
             hasSearched: true
           })
-
           this.search()
-        
         }}
         title="Search"
       />

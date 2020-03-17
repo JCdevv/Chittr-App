@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { Image,FlatList, ActivityIndicator, Text, View, Button } from 'react-native';
+import { Image,FlatList, ActivityIndicator, Text, View, Button,StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+import { Footer,Container } from 'native-base';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 class Chits extends Component {
   constructor(props){
@@ -11,11 +13,17 @@ class Chits extends Component {
     }
    }
 
-  profileNavigate(){
+  profileNavigate(user_id){
     this.getID().then((id) =>{
-      this.props.navigation.navigate('MyProfile',{
-        user_id: id
-      })
+      if(id == user_id || user_id == -1){
+        this.props.navigation.navigate('MyProfile',{
+          user_id: id
+        })
+      }else{
+        this.props.navigation.navigate('UserProfile',{
+          user_id: id
+        })
+      }
     })
   }
 
@@ -36,6 +44,7 @@ class Chits extends Component {
     return fetch("http://10.0.2.2:3333/api/v0.0.5/chits/")
     .then((response) => response.json())
     .then((responseJson) => {
+
     this.setState({
       isLoading: false,
       chitData: responseJson,
@@ -44,6 +53,12 @@ class Chits extends Component {
     .catch((error) =>{
       console.log(error);
     });
+  }
+
+  convertToDate(timestamp){
+    console.log(timestamp)
+    var date = new Date(timestamp).toString()
+    return date
   }
 
   componentDidMount(){
@@ -59,51 +74,42 @@ class Chits extends Component {
     }
 
     return(
-      <View style = {{flex: 1,backgroundColor: '#121212'}}> 
-        <FlatList
+      <Container style = {styles.container}> 
+        <FlatList style ={{marginBottom: 10}}
           data={this.state.chitData}
           renderItem={
             ({item}) => 
-            <View style= {{
+            <TouchableOpacity 
+              onPress={() =>{this.profileNavigate(item.user.user_id)}}
+              style= {{
               flexDirection: "column", alignItems: "center", marginBottom: 5, backgroundColor: '#3700B3'
-            }}>
-              <Image 
-              style={{
-               height: 75,
-               width: 75,
-               justifyContent: 'center',
-               alignItems: 'center',
- 
-
             }}
-            source={{uri: 'http://10.0.2.2:3333/api/v0.0.5/chits/' + item.chit_id + '/photo/'}}
-          />
+            >
+              <Image 
+              style={styles.image}
+              source={{uri: 'http://10.0.2.2:3333/api/v0.0.5/chits/' + item.chit_id + '/photo/'}}
+              />
 
               <Text style={{
                 color: '#BB86FC'
               }}>{item.chit_content}</Text>
               <Text style={{
                 color: '#BB86FC'
-              }}>Posted By:</Text>
-              <Text style={{
-                color: '#BB86FC'
-              }}>{item.user.given_name}, {item.user.family_name}</Text>
+              }}>Posted By: {item.user.given_name}, {item.user.family_name}</Text>
+              
 
-              <Button
-                color = '#3700B3'
-                onPress={() => {
-                  
-                 this.props.navigation.navigate('UserProfile',{
-                    user_id: item.user.user_id
-                 })
-               }}
-              title="Profile"
-             />  
-            </View>
+            <Text style={{
+                color: '#BB86FC'
+              }}>
+              {this.convertToDate(item.timestamp)}
+
+              </Text> 
+            </TouchableOpacity>
           }
           keyExtractor={({id}) => id}
         /> 
-      <View>
+
+      <Footer style={styles.footer}>
         <Button
           color = '#3700B3'
           onPress={() => {
@@ -114,7 +120,7 @@ class Chits extends Component {
         <Button
           color = '#3700B3'
           onPress={() => {
-            this.profileNavigate()
+            this.profileNavigate(-1)
           }}
         title="View Profile"
         />
@@ -126,10 +132,19 @@ class Chits extends Component {
           }}
         title="User Search"
         />
-        </View>  
-      </View>
+        </Footer>  
+      </Container>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {flex: 1,backgroundColor: '#121212'},
+  titleText: {color: '#BB86FC',textAlign: 'center',fontSize: 40,marginTop: 10},
+  text: {color: '#BB86FC',textAlign: 'center',fontSize: 15,marginTop: 10},
+  image: {height: 75,width: 75,justifyContent: 'center',alignItems: 'center'},
+  footer: {height: 30,backgroundColor: '#121212'}
+
+});
 
 export default Chits

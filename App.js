@@ -25,7 +25,7 @@ class App extends Component {
    render(){
     return(
       <NavigationContainer>
-        <Stack.Navigator initialRouteName = "Post"
+        <Stack.Navigator initialRouteName = "Home"
           screenOptions={{
             headerStyle: {
               backgroundColor: '#121212',

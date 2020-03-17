@@ -97,7 +97,8 @@ class Post extends Component {
 
 
    post(){
-    var date = + new Date()
+
+    let date =  Date.now();
 
     let res = JSON.stringify({
       timestamp: date,
@@ -155,9 +156,7 @@ class Post extends Component {
           value = {this.state.switchValue}/>      
       <Button
         onPress={() => {
-          let time = Math.round(+new Date()/1000)
-          this.setState({timestamp: time})
-          
+        
           if(this.state.locationEnabled == true){
             console.log("location enabled and using location")
             this.getLocation()
@@ -239,7 +238,7 @@ class Post extends Component {
     if(!this.state.locationEnabled){
         this.state.locationEnabled = requestLocationPermission();
       }
-     Geolocation.getCurrentPosition((position) =>{
+      Geolocation.getCurrentPosition((position) =>{
       let json = position
     
       this.setState({long :  json.coords.longitude})
@@ -258,7 +257,6 @@ class Post extends Component {
 }
 
 export default Post
-
 
 async function requestLocationPermission(){
   try {
