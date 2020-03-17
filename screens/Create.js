@@ -34,12 +34,18 @@ class Create extends Component {
       body: res
     })
     .then((response) => {
-      Alert.alert("Account Created. Please log in.!");
-      this.props.navigation.navigate('Login')
+      if(response.ok){
+        Alert.alert("Account Created. Please log in.!");
+        this.props.navigation.navigate('Login')
+      }
+      else{
+        Alert.alert("Error Creating Account!, Please Check Your Details Are Correct");
+      }
+      
     })
     .catch((error) => {
-      Alert.alert("Error Creating Account!");
-      console.error(error);
+      
+      console.log(error);
     });
   }
   

@@ -96,7 +96,7 @@ class Drafts extends Component {
 
     RNFS.writeFile(path, draft, 'utf8')
       .then((success) => {
-      console.log('FILE WRITTEN!');
+      Alert.alert("Drafts Updated")
     })
       .catch((err) => {
       console.log(err.message);

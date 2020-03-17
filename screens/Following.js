@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { ScrollView,FlatList, ActivityIndicator, Text, TextInput, View, Button,Alert } from 'react-native';
+import { StyleSheet,FlatList, ActivityIndicator, Text, View } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+import { Container,Button } from 'native-base';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 class Following extends Component {
   constructor(props){
@@ -83,29 +85,38 @@ class Following extends Component {
     }
 
     return(
-      <ScrollView>  
-        
+      <Container style ={styles.container}> 
         <FlatList
     
           data={this.state.following}
           renderItem={
             ({item}) => 
-            <View>
-              <Text>{item.given_name}, {item.family_name}</Text>
+            <View style={{flexDirection: 'row'}}>
+              <Text style ={styles.text}>{item.given_name}, {item.family_name}</Text>
 
-              <Button
-            onPress={() => {
-              this.removeFollow(item.user_id);
-             }}
-            title="Remove"
-               />
+              <TouchableOpacity style ={styles.button}
+                onPress={() => {
+                  this.removeFollow(item.user_id);
+                }}>
+
+              <Text style={styles.text}> Unfollow </Text>
+              </TouchableOpacity>
             </View>
           }
           keyExtractor={({id}, index) => id}
         /> 
-      </ScrollView>
+      </Container>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {flex: 1,backgroundColor: '#121212',justifyContent: 'center',alignItems: 'center'},
+  text: {color: '#BB86FC',textAlign: 'center',fontSize: 15},
+  image: {height: 75,width: 75,justifyContent: 'center',alignItems: 'center'},
+  footer: {height: 30,backgroundColor: '#121212'},
+  button: {alignItems: 'center', marginLeft: 10, backgroundColor: '#DDDDDD'}
+
+});
 
 export default Following

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { ActivityIndicator, Text, View, Button,Alert,Image,FlatList } from 'react-native';
+import { StyleSheet, Text, View, Button,Alert,Image,FlatList } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+import {Container} from 'native-base'
 
 class UserProfile extends Component {
     constructor(props){
@@ -47,9 +48,6 @@ class UserProfile extends Component {
 
   }
 
-  
-
-
   convertToDate(timestamp){
     console.log(timestamp)
     var date = new Date(timestamp).toString()
@@ -94,7 +92,7 @@ class UserProfile extends Component {
           
           this.setState({chitData: chits})
           this.setState({given_name: fname})
-          this.setState({last_name: lname})
+          this.setState({family_name: lname})
           this.setState({email: email})
           this.setState({isLoading: false})
         });
@@ -107,15 +105,16 @@ class UserProfile extends Component {
 
   render(){  
       return(
-        <View>
+        <Container style={styles.mainContainer}>
+        <Container style={styles.container}>
           <Image 
             style={{height: 100,width: 100,justifyContent: 'center', alignItems: 'center', }}
             source={{uri: 'http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.id + '/photo/'}}
           />
 
-          <Text>{this.state.given_name}</Text>
-          <Text>{this.state.family_name}</Text>
-          <Text>{this.state.email}</Text>
+          <Text style={styles.text}>{this.state.given_name}</Text>
+          <Text style={styles.text}>{this.state.family_name}</Text>
+          <Text style={styles.text}>{this.state.email}</Text>
           
         <Button
           onPress={() => {
@@ -142,6 +141,9 @@ class UserProfile extends Component {
           }}
         title="Following" 
         />  
+      </Container>
+
+      <Container style={styles.mainContainer}>
 
       <FlatList
           data={this.state.chitData}
@@ -151,14 +153,7 @@ class UserProfile extends Component {
               flexDirection: "column", alignItems: "center", marginBottom: 5, backgroundColor: '#3700B3'
             }}>
               <Image 
-              style={{
-               height: 75,
-               width: 75,
-               justifyContent: 'center',
-               alignItems: 'center',
- 
-
-            }}
+              style={styles.image}
             source={{uri: 'http://10.0.2.2:3333/api/v0.0.5/chits/' + item.chit_id + '/photo/'}}
           />
 
@@ -172,19 +167,26 @@ class UserProfile extends Component {
               {this.convertToDate(item.timestamp)}
 
               </Text>
-
-      
             </View>
           }
           keyExtractor={({id}) => id}
         /> 
-
-
-      </View>
+      </Container>
+      </Container>
 
       )  
   }
 }
+
+const styles = StyleSheet.create({
+  container: {flex: 1,backgroundColor: '#121212',alignItems: 'center'},
+  mainContainer: {backgroundColor: '#121212'},
+  text: {color: '#BB86FC',textAlign: 'center',fontSize: 15},
+  image: {height: 75,width: 75,justifyContent: 'center',alignItems: 'center'},
+  footer: {height: 30,backgroundColor: '#121212'},
+  button: {alignItems: 'center', marginLeft: 10, backgroundColor: '#DDDDDD'}
+
+});
 
 
 export default UserProfile

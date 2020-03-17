@@ -3,8 +3,46 @@ import { TextInput, View, Button,Alert,PermissionsAndroid,Switch} from 'react-na
 import Geolocation, { watchPosition } from 'react-native-geolocation-service'
 import AsyncStorage from '@react-native-community/async-storage';
 import { ForceTouchGestureHandler } from 'react-native-gesture-handler';
+import BackgroundTask from 'react-native-background-task'
 
 var RNFS = require('react-native-fs');
+
+BackgroundTask.define(() => {
+  console.log("running!")
+  let date =  Date.now();
+
+  let res = JSON.stringify({
+    timestamp: date,
+    chit_content: this.state.content,
+    'location' : {
+      longitude: this.state.long,
+      latitude: this.state.lat
+    }
+  });
+
+  console.log(res)
+    this.getToken().then((token) =>{
+      return fetch('http://10.0.2.2:3333/api/v0.0.5/chits/',
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Typee': 'application/json',
+          'X-Authorization' : token
+        },
+        body: res
+      })
+      .then((response) => {
+        response.json().then(json => {
+        })
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    })
+  
+  BackgroundTask.finish()
+})
 
 class Post extends Component {
   constructor(props){
@@ -26,6 +64,7 @@ class Post extends Component {
    componentDidMount(){
      requestLocationPermission()
      this.makeDirectory()
+     
    }
 
    toggleLocation = (value) => {
@@ -81,8 +120,6 @@ class Post extends Component {
     this.saveDraft(this.state.content)
   });
   }  
-
-
   saveDraft(storedDrafts){
     var path = RNFS.DocumentDirectoryPath + '/config/drafts.txt';
 
@@ -95,50 +132,58 @@ class Post extends Component {
     });
   }
 
+  post(){
+    let text = this.state.content
+    if(text.length > 141){
+      Alert.alert("Chits can be no longer than 141 characters. Your chit is " + text.length + " long")
+      throw new Error('Length > 141')
+    }else{
+      let date =  Date.now();
 
-   post(){
-
-    let date =  Date.now();
-
-    let res = JSON.stringify({
-      timestamp: date,
-      chit_content: this.state.content,
-      'location' : {
-        longitude: this.state.long,
-        latitude: this.state.lat
-      }
-    });
-    console.log(res);
-    this.getToken().then((token) =>{
-      return fetch('http://10.0.2.2:3333/api/v0.0.5/chits/',
-      {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-Authorization' : token
-        },
-        body: res
-      })
-      .then((response) => {
-        response.json().then(json => {
-          if(this.state.isPhoto == true){
-            let id = (json)['chit_id']
-            this.props.navigation.navigate('Photo',{
-              chit_id : id
+      let res = JSON.stringify({
+        timestamp: date,
+        chit_content: this.state.content,
+        'location' : {
+          longitude: this.state.long,
+          latitude: this.state.lat
+        }
+      });
+      console.log(res);
+      this.getToken().then((token) =>{
+        return fetch('http://10.0.2.2:3333/api/v0.0.5/chits/',
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Authorization' : token
+          },
+          body: res
+        })
+        .then((response) => {
+          if(response.ok){
+            Alert.alert("Chit Posted Successfully")
+            response.json().then(json => {
+              if(this.state.isPhoto == true){
+                let id = (json)['chit_id']
+                this.props.navigation.navigate('Photo',{
+                  chit_id : id
+                })
+              }
+              else{
+                this.props.navigation.navigate('Chits')
+              }
             })
-            
           }
           else{
-            this.props.navigation.navigate('Chits')
+            Alert.alert("Error Posting Chit")
           }
         })
+        .catch((error) => {
+          console.log(error);
+        });
       })
-      .catch((error) => {
-        Alert.alert("Error Posting Chit!")
-        console.error(error);
-      });
-    })
+    } 
   }
 
 
@@ -188,6 +233,16 @@ class Post extends Component {
         }
         }
       title="Post and Add Photo"
+      />
+
+      <Button
+        onPress={() => {
+          
+          Alert.alert("Chit Has Been Schedule For Within 15 Minutes From Now")
+          
+          }
+        }
+      title="Schedule Post"
       />
 
     <Button

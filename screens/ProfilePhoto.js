@@ -43,12 +43,17 @@ class ProfilePhoto extends Component {
           body: uri
         })
         .then((response) => {
-          Alert.alert("Profile Image Updated Successfully")
-          this.props.navigation.navigate('Profile')
+          if(response.ok){
+            
+            Alert.alert("Image Uploaded Successfully")
+            this.props.navigation.navigate('Profile')
+          }
+          else{
+            Alert.alert("Image Failed To Be Uploaded, Please Try Again")
+          }
         })
         .catch((error) => {
-          Alert.alert("Error Updating Photo!")
-          console.error(error);
+          console.log(error);
         });
       })
     }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { View,StyleSheet,Button,Text } from 'react-native';
-import { Container,Body,Title } from 'native-base';
+import { StyleSheet,Button} from 'react-native';
+import { Container,Body,Text } from 'native-base';
 
 
 class Home extends Component {

@@ -21,7 +21,7 @@ class Chits extends Component {
         })
       }else{
         this.props.navigation.navigate('UserProfile',{
-          user_id: id
+          user_id: user_id
         })
       }
     })

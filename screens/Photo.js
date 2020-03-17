@@ -42,7 +42,6 @@ class Photo extends Component {
   postPhoto(uri){
     console.log(this.state.chit_id)
     this.getToken().then((token) =>{
-
       return fetch('http://10.0.2.2:3333/api/v0.0.5/chits/' + this.state.chit_id + '/photo',
         {
           method: 'POST',
@@ -54,12 +53,17 @@ class Photo extends Component {
           body: uri
         })
         .then((response) => {
-          Alert.alert("Image Attached Successfully")
-          this.props.navigation.navigate('Chits')
+          if(response.ok){
+            
+            Alert.alert("Image Attached Successfully")
+            this.props.navigation.navigate('Chits')
+          }
+          else{
+            Alert.alert("Image Failed To Be Posted, Please Try Again")
+          }
         })
         .catch((error) => {
-          Alert.alert("Error Posting Chit!")
-          console.error(error);
+          console.log(error);
         });
       })
     }

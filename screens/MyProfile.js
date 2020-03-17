@@ -48,7 +48,7 @@ class MyProfile extends Component {
   }
 
   logout(){
-    this.getToken.then((token) =>{
+    this.getToken().then((token) =>{
       return fetch('http://10.0.2.2:3333/api/v0.0.5/logout/',
       {
         method: 'POST',
@@ -85,7 +85,7 @@ class MyProfile extends Component {
           console.log(lname)
           
           this.setState({given_name: fname})
-          this.setState({last_name: lname})
+          this.setState({family_name: lname})
           this.setState({email: email})
           this.setState({isLoading: false})
         });
@@ -104,7 +104,7 @@ class MyProfile extends Component {
           />
     
           <Text style={styles.text}>{this.state.given_name}</Text>
-          <Text style={styles.text}>{this.state.last_name}</Text>
+          <Text style={styles.text}>{this.state.family_name}</Text>
           <Text style={styles.text}>{this.state.email}</Text>
 
           <View>
@@ -140,7 +140,8 @@ class MyProfile extends Component {
         
             <Button
               onPress={() => {
-                  this.props.navigation.navigate('ProfilePhoto')
+                  this.props.navigation.navigate('Login')
+                  this.logout()
               }}
               title="Logout" 
               />  

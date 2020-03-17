@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TextInput, View, Button,Image,FlatList,Text } from 'react-native';
+import { TextInput, View, Button,Image,FlatList,Text, Alert } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 
 class Search extends Component {
@@ -16,21 +16,25 @@ class Search extends Component {
     return fetch("http://10.0.2.2:3333/api/v0.0.5/search_user?q=" + this.state.content)
     .then((response) => response.json())
     .then((responseJson) => {
-      console.log(responseJson)
-    this.setState({
-      hasSearched: true,
-      searchData: responseJson,
-      
-      });
+      if(responseJson.length == 0){
+        Alert.alert("No Results Found")
+      }  
+      else{
+        this.setState({
+          hasSearched: true,
+          searchData: responseJson,
+          
+        });
+      }
     })
     .catch((error) =>{
       console.log(error);
-    });
+    })
   }
 
    render(){
 
-    if(this.state.hasSearched == true){
+    if(this.state.hasSearched == true && this.state.searchData.length != 0){
       return(
 
         <View>
@@ -50,8 +54,6 @@ class Search extends Component {
         }}
         title="Search"
       />
-    
-
         <FlatList
           data={this.state.searchData}
           renderItem={

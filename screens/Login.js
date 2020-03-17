@@ -12,11 +12,11 @@ class Login extends Component {
     }
    }
 
-   login(){
+   login(email,password){
 
     let res = JSON.stringify({
-      email: this.state.email,
-      password: this.state.password
+      email: email,
+      password: password
     });
 
     console.log(res);
@@ -31,19 +31,26 @@ class Login extends Component {
       body: res
     })
     .then((response) => {
-      response.json().then(json => {
-        let token = (json)['token']
-        console.log("Token is!: " + token)
-        let id = (json)['id']
-        this.storeDetails(token,id)
+      if(response.ok){
+        response.json().then(json => {
+          let token = (json)['token']
+          console.log("Token is!: " + token)
+          let id = (json)['id']
+          this.storeDetails(token,id)
 
-      });
-      Alert.alert("Logged In!");
-      this.props.navigation.navigate('Chits')
+        });
+        Alert.alert("Logged In!");
+        this.props.navigation.navigate('Chits')
+      }
+      else{
+        Alert.alert("Error Logging In, Please Check Your Details!")
+        throw new Error('Login Error')
+        
+      }
     })
     .catch((error) => {
-      Alert.alert("Error Logging In!");
-      console.error(error);
+      console.log(error)
+      throw new Error('Login Error')
     });
   }
 
@@ -80,7 +87,7 @@ class Login extends Component {
         <Button
           color = '#3700B3'
           onPress={() => {
-            this.login();
+            this.login(this.state.email,this.state.password);
           }}
         title="Login"
           />
