@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { TextInput, View, Button,Alert } from 'react-native';
+import { TextInput, StyleSheet, Button,Alert,Text } from 'react-native';
+import { Container } from 'native-base';
 
 
 class Create extends Component {
@@ -51,27 +52,33 @@ class Create extends Component {
   
    render(){
     return(
-    <View>
+    <Container style={styles.container}>
+
+      <Text style={styles.text}> Please Enter Your Details</Text>
       <TextInput 
         placeholder='First Name'
-        style={{ height: 40, borderColor: 'gray', borderWidth: 1}} 
+        style={{ height: 40, borderColor: 'gray', borderWidth: 1,color: 'white'}} 
+        placeholderTextColor={'white'}
         onChangeText={given_name => this.setState({given_name: given_name})}
       />
 
       <TextInput 
         placeholder='Last Name'
-        style={{ height: 40, borderColor: 'gray', borderWidth: 1 }} 
+        style={{ height: 40, borderColor: 'gray', borderWidth: 1,color: 'white' }} 
+        placeholderTextColor={'white'}
         onChangeText={family_name => this.setState({family_name: family_name})}
       />
       <TextInput 
         placeholder='Email'
-        style={{ height: 40, borderColor: 'gray', borderWidth: 1 }} 
+        style={{ height: 40, borderColor: 'gray', borderWidth: 1,color: 'white' }} 
+        placeholderTextColor={'white'}
         onChangeText={email => this.setState({email: email})}
       />
 
       <TextInput 
         placeholder='Password'
-        style={{ height: 40, borderColor: 'gray', borderWidth: 1 }} 
+        style={{ height: 40, borderColor: 'gray', borderWidth: 1, color: 'white' }} 
+        placeholderTextColor={'white'}
         onChangeText={password => this.setState({password: password})}
       />
      
@@ -81,9 +88,15 @@ class Create extends Component {
       }}
     title="Create Account"
 />
-   </View>
+   </Container>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {backgroundColor: '#121212',justifyContent: 'center'},
+  loginContainer: {marginTop: 0,backgroundColor: '#121212',justifyContent: 'center'},
+  text: {color: '#BB86FC',fontSize: 20,marginTop: 30,textAlign: 'center'}
+});
 
 export default Create
