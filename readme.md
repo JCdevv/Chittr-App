@@ -9,6 +9,7 @@ Application written using React Native and tested on Android.
 - Ensure [Android Studio](https://developer.android.com/studio?hl=ru) is installed on your machine and an emulator has been created or local Android device connected with Android Debugging enabled.
 - The latest version of the API is required.
 - Download the repo and extract to your chosen location.
+- Download and install [Node](https://nodejs.org/en/download/)
 - Install the [React Native CLI](https://reactnative.dev/docs/getting-started)
 - Navigate to application root directory `./your/location/Chittr_App` within terminal.
 - Run `npx react-native run-android` in terminal.
