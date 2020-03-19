@@ -4,17 +4,16 @@ Chittr is a Twitter clone that allows for the posting of short, textual based po
 
 ## Installation
 
-
-- Ensure Android Studio or Xcode is installed on your machine.
+- Ensure [Android Studio](https://developer.android.com/studio?hl=ru) is installed on your machine and an emulator has been created.
 - Download the repo and extract to your chosen location.
 - Install the [React Native CLI](https://reactnative.dev/docs/getting-started)
-- Navigate to application root directory `./Chittr_App` within terminal.
-- Run `npm run android` in terminal.
+- Navigate to application root directory `./your/location/Chittr_App` within terminal.
+- Run `npx react-native run-android` in terminal.
 
 ## Notes
 - Application developed and tested on Android only.
 - Application requires various permission on Android: Location and Camera.
-- Location functionality is hit and miss on emulator. Using an actual device is recommended.
+- Location functionality is hit and miss on emulator. Using an actual device is recommended, tested working on emulator running API 29.
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
