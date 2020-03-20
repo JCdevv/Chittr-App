@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { ActivityIndicator, Text, View, Button,Alert,Image,StyleSheet } from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
 import { Container, Footer } from 'native-base';
+import Utils from '../utils/utils'
 
 class MyProfile extends Component {
     constructor(props){
@@ -12,43 +12,36 @@ class MyProfile extends Component {
           email: '',
           id: '',
           isLoading: true,
+          hasLoaded: false,
+          url: 'temp'
         }
     }
-
-  async getID(){
-    try {
-      let id = await AsyncStorage.getItem('id')
-      console.log(id)        
-      if(id !== null) {
-        return id
-      }
-      return id
-    } catch(e) {
-      console.error(e)
-    }
-  } 
-
-  async getToken(){
-    try {
-      let token = await AsyncStorage.getItem('token')
-      console.log("Token is!: " + token)
-      if(token !== null) {
-        return token
-      }
-        return token
-      } catch(e) {
-        console.error(e)
-      }
-    }
+  /**
+  * Gets ID and stores in state
+  */
   componentDidMount(){
-    this.getID().then((id) =>{
+    //Event listener listens to when navigation change causes a change in screen focus
+    this.reloadProfile = this.props.navigation.addListener('focus', () =>
+		{ 
+      if(this.state.hasLoaded == true){
+        //Load chits incase of change due to chit being posted
+      this.getProfile(this.state.id)
+      //Changes uri due to react native caching images and not showing an update profile picture
+      this.setState({url: `http://10.0.2.2:3333/api/v0.0.5/user/${this.state.id}/photo/?` + Math.random()})
+      } 
+		});
+    Utils.getID().then((id) =>{
       this.setState({id: id})
       this.getProfile(id)
+      this.setState({url: `http://10.0.2.2:3333/api/v0.0.5/user/${id}/photo/?` + Math.random()})
+      this.setState({hasLoaded: true})
     })
   }
-
+  /**
+  * If user has pressed logout button, make HTTP request to log them out
+  */
   logout(){
-    this.getToken().then((token) =>{
+    Utils.getToken().then((token) =>{
       return fetch('http://10.0.2.2:3333/api/v0.0.5/logout/',
       {
         method: 'POST',
@@ -57,18 +50,21 @@ class MyProfile extends Component {
         },
       })
       .then((response) => {
-        Alert.alert("Logged out")
+        Alert.alert('Logged out')
         this.props.navigation.navigate('Home')
       })
       .catch((error) => {
-        Alert.alert("Error Logging Out!");
+        Alert.alert('Error Logging Out!');
         console.error(error);
       });
     })
   }
-
+  /**
+  * Get Profile gets the details of the User
+  */
   getProfile(id){
-    return fetch('http://10.0.2.2:3333/api/v0.0.5/user/' +id,
+    //Make http request
+    return fetch(`http://10.0.2.2:3333/api/v0.0.5/user/${id}`,
       {
         method: 'GET',
         headers: {
@@ -78,12 +74,11 @@ class MyProfile extends Component {
       })
       .then((response) => {
         response.json().then(json => {
+          //Parse JSON returned, getting details of user
           let fname = (json)['given_name']
           let lname = (json)['family_name']
           let email = (json)['email']
-
-          console.log(lname)
-          
+          //Set returned details to values within state so they can be displayed
           this.setState({given_name: fname})
           this.setState({family_name: lname})
           this.setState({email: email})
@@ -91,60 +86,68 @@ class MyProfile extends Component {
         });
       })
       .catch((error) => {
-        Alert.alert("Error Grabbing Account Details!");
+        Alert.alert('Error Grabbing Account Details!');
         console.error(error);
       });
   }
 
   render(){
+    const {navigation} = this.props
     return(
       <Container style={styles.container}>
-          <Image style={styles.image}
-            source={{uri: 'http://10.0.2.2:3333/api/v0.0.5/user/' + this.state.id + '/photo/'}}
-          />
+        <Image style={styles.image} source={{uri: this.state.url}}/>
     
-          <Text style={styles.text}>{this.state.given_name}</Text>
-          <Text style={styles.text}>{this.state.family_name}</Text>
-          <Text style={styles.text}>{this.state.email}</Text>
+        <Text style={styles.text}>{this.state.given_name}</Text>
+        <Text style={styles.text}>{this.state.family_name}</Text>
+        <Text style={styles.text}>{this.state.email}</Text>
 
-          <View>
-            <Button
+        <View>
+          <Button
+            color = '#3700B3'
             onPress={() => {
-              this.props.navigation.navigate('Update',{
+              navigation.navigate('Update',{
                 givenName: this.state.given_name,
                 familyName: this.state.family_name,
                 email: this.state.email
               })
             }}
-          title="Update Profile" 
-          />
+            title='Update Profile'/>
+
           <Button
-            onPress={() => {
-              this.props.navigation.navigate('Followers',{
-                id: this.state.id
-              })
-            }}
-          title="Followers" 
-          />
-          
-            <Button
+            color = '#3700B3'
               onPress={() => {
-                this.props.navigation.navigate('Following',{
+                navigation.navigate('Followers',{
                   id: this.state.id
                 })
               }}
-            title="Following" 
-            />  
+            title='Followers'/>
           
-        
-        
-            <Button
+          <Button
+            color = '#3700B3'
               onPress={() => {
-                  this.props.navigation.navigate('Login')
-                  this.logout()
+                navigation.navigate('Following',{
+                  id: this.state.id,
+                  currentUser: true
+                })
               }}
-              title="Logout" 
-              />  
+            title='Following'
+            />  
+
+          <Button
+            color = '#3700B3'
+              onPress={() => {
+                navigation.navigate('ProfilePhoto')
+              }}
+            title='Update Photo' 
+            />  
+             
+          <Button
+            color = '#3700B3'
+            onPress={() => {
+              navigation.navigate('Login')
+              this.logout()
+            }}
+            title='Logout'/>  
         </View>
       </Container>
     );

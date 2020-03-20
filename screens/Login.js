@@ -11,17 +11,21 @@ class Login extends Component {
       password: ''
     }
    }
-
-   login(email,password){
-
-    let res = JSON.stringify({
+  
+  /**
+  * login sends the entered details
+  * to the API for login validation
+  * and sends user to homepage if successful
+  */
+  async login(email, password){
+    //Creates JSON object of email and password
+    const res = JSON.stringify({
       email: email,
       password: password
     });
 
-    console.log(res);
-
-    return fetch("http://10.0.2.2:3333/api/v0.0.5/login/",
+    //HTTP request made to API login endpoint
+    return fetch('http://10.0.2.2:3333/api/v0.0.5/login/',
     {
       method: 'POST',
       headers: {
@@ -31,45 +35,50 @@ class Login extends Component {
       body: res
     })
     .then((response) => {
+      //If response is OK - no errors, retrieve response token and id and store them in asyncstorage for later access
       if(response.ok){
         response.json().then(json => {
-          let token = (json)['token']
-          console.log("Token is!: " + token)
-          let id = (json)['id']
-          this.storeDetails(token,id)
+          const token = (json)['token']
+          const id = (json)['id']
+          const password = this.state.password
+          this.storeDetails(token,id,password)
 
         });
-        Alert.alert("Logged In!");
+        //Alert user of successful login and navigate to chits page
+        Alert.alert('Logged In!');
         this.props.navigation.navigate('Chits')
       }
       else{
-        Alert.alert("Error Logging In, Please Check Your Details!")
-        throw new Error('Login Error')
+        //Aler user of eror. Throw error for use with testing.
+        Alert.alert('Error Logging In, Please Check Your Details!')
         
       }
     })
     .catch((error) => {
       console.log(error)
-      throw new Error('Login Error')
     });
   }
 
+/**
+  * storeDetails stores the details sent in login request response in async storage
+  * as well as the password the user entered for later use in profile update
+  */
   async storeDetails(token,id,password){
     try {
       await AsyncStorage.setItem('token', token)
       await AsyncStorage.setItem('id', id.toString())
-      await AsyncStorage.setItem('password',this.state.password)
+      await AsyncStorage.setItem('password',password)
 
     } catch (e) {
       console.error(e)
     }
   }
   
-   render(){
+  render(){
     return(
-    <Container style={styles.container}>
-      <Text style={styles.text}> Please Enter Your Login Details</Text>
+      <Container style={styles.container}>
       <Container style={styles.loginContainer}>
+      <Text style={styles.text}>Please Enter Your Details</Text>
         <TextInput 
           placeholder='Email'
           style={{ height: 40, borderColor: 'gray', borderWidth: 1,color: 'white'}} 
@@ -81,6 +90,7 @@ class Login extends Component {
           placeholder='Password'
           style={{ height: 40, borderColor: 'gray', borderWidth: 1,color: 'white'}}
           placeholderTextColor={'white'}
+          secureTextEntry={true}
           onChangeText={password => this.setState({password: password})}
         />
       
@@ -89,10 +99,8 @@ class Login extends Component {
           onPress={() => {
             this.login(this.state.email,this.state.password);
           }}
-        title="Login"
-          />
-          </Container>
-        
+        title="Login"/>
+      </Container>  
    </Container>
     );
   }
@@ -105,3 +113,4 @@ const styles = StyleSheet.create({
 });
 
 export default Login
+

@@ -10,22 +10,24 @@ class Create extends Component {
       email: '',
       password: '',
       given_name: '',
-      family_name: ''
+      family_name: '',
     }
    }
 
-   createAccount(){
-
-    let res = JSON.stringify({
+   /**
+  * createAccount makes a HTTP request to user creation endpoint
+  */
+  createAccount(){
+    //Create JSON ovject of account information
+    const res = JSON.stringify({
       given_name: this.state.given_name,
       family_name: this.state.family_name,
       email: this.state.email,
       password: this.state.password
     });
 
-    console.log(res);
-
-    return fetch("http://10.0.2.2:3333/api/v0.0.5/user/",
+    //Make HTTP request
+    return fetch('http://10.0.2.2:3333/api/v0.0.5/user/',
     {
       method: 'POST',
       headers: {
@@ -35,59 +37,61 @@ class Create extends Component {
       body: res
     })
     .then((response) => {
+      const {navigation} = this.props
+      //if OK - no error
       if(response.ok){
-        Alert.alert("Account Created. Please log in.!");
-        this.props.navigation.navigate('Login')
+        //Alert user of success and navigate to login page
+        Alert.alert('Account Created. Please log in.!');
+        navigation.navigate('Login')
       }
       else{
-        Alert.alert("Error Creating Account!, Please Check Your Details Are Correct");
-      }
-      
+        //Alert user of error
+        Alert.alert('Error Creating Account!, Please Check Your Details Are Correct');
+      } 
     })
     .catch((error) => {
-      
+      Alert.alert('API is down, pleae try again later.');
       console.log(error);
     });
   }
   
-   render(){
+  render(){
     return(
-    <Container style={styles.container}>
+      <Container style={styles.container}>
 
-      <Text style={styles.text}> Please Enter Your Details</Text>
-      <TextInput 
-        placeholder='First Name'
-        style={{ height: 40, borderColor: 'gray', borderWidth: 1,color: 'white'}} 
-        placeholderTextColor={'white'}
-        onChangeText={given_name => this.setState({given_name: given_name})}
-      />
+        <Text style={styles.text}> Please Enter Your Details</Text>
+        <TextInput 
+          placeholder='First Name'
+          style={{ height: 40, borderColor: 'gray', borderWidth: 1,color: 'white'}} 
+          placeholderTextColor={'white'}
+          onChangeText={given_name => this.setState({given_name: given_name})}
+        />
 
-      <TextInput 
-        placeholder='Last Name'
-        style={{ height: 40, borderColor: 'gray', borderWidth: 1,color: 'white' }} 
-        placeholderTextColor={'white'}
-        onChangeText={family_name => this.setState({family_name: family_name})}
-      />
-      <TextInput 
-        placeholder='Email'
-        style={{ height: 40, borderColor: 'gray', borderWidth: 1,color: 'white' }} 
-        placeholderTextColor={'white'}
-        onChangeText={email => this.setState({email: email})}
-      />
+        <TextInput 
+          placeholder='Last Name'
+          style={{ height: 40, borderColor: 'gray', borderWidth: 1,color: 'white' }} 
+          placeholderTextColor={'white'}
+          onChangeText={family_name => this.setState({family_name: family_name})}
+        />
+        <TextInput 
+          placeholder='Email'
+          style={{ height: 40, borderColor: 'gray', borderWidth: 1,color: 'white' }} 
+          placeholderTextColor={'white'}
+          onChangeText={email => this.setState({email: email})}
+        />
 
-      <TextInput 
-        placeholder='Password'
-        style={{ height: 40, borderColor: 'gray', borderWidth: 1, color: 'white' }} 
-        placeholderTextColor={'white'}
-        onChangeText={password => this.setState({password: password})}
-      />
+        <TextInput 
+          placeholder='Password'
+          style={{ height: 40, borderColor: 'gray', borderWidth: 1, color: 'white' }} 
+          placeholderTextColor={'white'}
+          onChangeText={password => this.setState({password: password})}
+        />
      
-    <Button
-      onPress={() => {
-        this.createAccount();
-      }}
-    title="Create Account"
-/>
+        <Button
+          onPress={() => {
+            this.createAccount();
+          }}
+        title='Create Account'/>
    </Container>
     );
   }

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { TextInput, View, Button,Image,FlatList,Text, Alert } from 'react-native';
+import { TextInput, View, Button,Image,FlatList,Text, Alert,StyleSheet,TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+import { Container } from 'native-base'
+import Utils from '../utils/utils'
 
 class Search extends Component {
   constructor(props){
@@ -11,13 +13,17 @@ class Search extends Component {
       searchData: []
     }
   }
-
+  /**
+  * Makes request to server with search query
+  * server responds with list of users matching this query
+  */
   search(){
-    return fetch("http://10.0.2.2:3333/api/v0.0.5/search_user?q=" + this.state.content)
+    //Make HTTP request
+    return fetch(`http://10.0.2.2:3333/api/v0.0.5/search_user?q=${this.state.content}`)
     .then((response) => response.json())
     .then((responseJson) => {
       if(responseJson.length == 0){
-        Alert.alert("No Results Found")
+        Alert.alert('No Results Found')
       }  
       else{
         this.setState({
@@ -32,12 +38,36 @@ class Search extends Component {
     })
   }
 
+  /**
+  * Profile Navigator handles which profile page to send the user to
+  * depending on whether the profile requested is the current users profile
+  * or a different users profile
+  */
+  profileNavigate(user_id){
+    const {navigation} = this.props
+    //get current stored ID
+    Utils.getID().then((id) =>{
+      //if current ID is equal to user_id passed from button press, they are current user and send to my profile
+      if(id == user_id || user_id == -1){
+        navigation.navigate('MyProfile',{
+          user_id: id
+        })
+      }
+      //Else, they are not the current user, send to different user profile page
+      else{
+        navigation.navigate('UserProfile',{
+          user_id: user_id
+        })
+      }
+    })
+  }
+
    render(){
 
     if(this.state.hasSearched == true && this.state.searchData.length != 0){
       return(
 
-        <View>
+        <Container style={styles.container}>
         <TextInput style={{ height: 40, borderColor: 'gray', borderWidth: 1 }} 
           onChangeText={content => this.setState({content: content})}
         />
@@ -52,14 +82,16 @@ class Search extends Component {
           this.search()
         
         }}
-        title="Search"
+        title='Search'
       />
         <FlatList
           data={this.state.searchData}
           renderItem={
-            ({item}) => 
-            <View style= {{
-              flexDirection: "column", alignItems: "center", marginBottom: 5, backgroundColor: '#3700B3'
+            ({item,index}) => 
+            <TouchableOpacity 
+              onPress={() =>{this.profileNavigate(item.user_id)}}
+              style= {{
+              flexDirection: "row", alignItems: "center", marginBottom: 5, backgroundColor: '#3700B3'
             }}>
               <Image 
               style={{
@@ -70,28 +102,30 @@ class Search extends Component {
  
 
             }}
-            source={{uri: 'http://10.0.2.2:3333/api/v0.0.5/user/' + item.user_id + '/photo/'}}
+            source={{uri: `http://10.0.2.2:3333/api/v0.0.5/user/${item.user_id}/photo/?` + Math.random()}}
           />
               <Text style={{
-                color: '#BB86FC'
+                color: '#BB86FC', marginLeft: 30
               }}>{item.given_name}, {item.family_name}</Text>
-            </View>
+            </TouchableOpacity>
           }
-          keyExtractor={({id}) => id}
+          keyExtractor={(item, index) => index.toString()}
         /> 
-        </View>
+        </Container>
       )
     }
 
     return(
 
-      <View>
-        <TextInput style={{ height: 40, borderColor: 'gray', borderWidth: 1 }} 
+      <Container style={styles.container}>
+        <TextInput style={{ height: 40, borderColor: 'gray', borderWidth: 1,color: 'white'}} 
           onChangeText={content => this.setState({content: content})}
         />
 
         <Button
+        color = '#3700B3'
         onPress={() => {
+          
           this.setState({
             hasSearched: true
           })
@@ -99,9 +133,15 @@ class Search extends Component {
         }}
         title="Search"
       />
-    </View>
+    </Container>
     );  
   }
 }
+
+const styles = StyleSheet.create({
+  container: {backgroundColor: '#121212'},
+  loginContainer: {marginTop: 0,backgroundColor: '#121212',justifyContent: 'center'},
+  text: {color: '#BB86FC',fontSize: 20,marginTop: 30,textAlign: 'center'}
+});
 
 export default Search

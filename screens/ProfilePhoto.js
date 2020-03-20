@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {TouchableOpacity,Text,StyleSheet,View,Alert } from 'react-native';
 import { RNCamera } from 'react-native-camera';
-import AsyncStorage from '@react-native-community/async-storage';
+import Utils from '../utils/utils'
+
 
 class ProfilePhoto extends Component {
   constructor(props){
@@ -28,9 +29,13 @@ class ProfilePhoto extends Component {
     </View>
     );
   }
-
+  /**
+  * postPhoto() takes image taken from camera and sends it to API
+  * for use in updating profile picture of the user
+  */
   postPhoto(uri){
-    this.getToken().then((token) =>{
+    Utils.getToken().then((token) =>{
+      const {navigation} = this.props
 
       return fetch('http://10.0.2.2:3333/api/v0.0.5/user/photo',
         {
@@ -45,11 +50,11 @@ class ProfilePhoto extends Component {
         .then((response) => {
           if(response.ok){
             
-            Alert.alert("Image Uploaded Successfully")
-            this.props.navigation.navigate('Profile')
+            Alert.alert('Image Uploaded Successfully')
+            navigation.navigate('MyProfile')
           }
           else{
-            Alert.alert("Image Failed To Be Uploaded, Please Try Again")
+            Alert.alert('Image Failed To Be Uploaded, Please Try Again')
           }
         })
         .catch((error) => {
@@ -57,20 +62,6 @@ class ProfilePhoto extends Component {
         });
       })
     }
-
-    async getToken(){
-      try {
-        let token = await AsyncStorage.getItem('token')
-        console.log("Token is!: " + token)
-        if(token !== null) {
-          return token
-        }
-        return token
-      } catch(e) {
-        console.error(e)
-      }
-    }
-  
 
   takePicture = async() => {
     if (this.camera) {

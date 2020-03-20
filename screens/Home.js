@@ -6,6 +6,7 @@ import { Container,Body,Text } from 'native-base';
 class Home extends Component {
 
    render(){
+    const {navigation} = this.props
     return(
       <Container style={styles.container}>
         <Text style={styles.titleText}>Welcome to Chittr</Text>
@@ -16,17 +17,17 @@ class Home extends Component {
               color = '#3700B3'
               
               onPress={() => {
-                this.props.navigation.navigate('Create')
+                navigation.navigate('Create')
               }}
-            title="Create New Account"
+            title='Create New Account'
           />
 
           <Button
             color = '#3700B3'
             onPress={() => {
-              this.props.navigation.navigate('Login')
+              navigation.navigate('Login')
             }}
-          title="Login To Account"
+          title='Login To Account'
           />
         </Body>
     </Container>

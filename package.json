@@ -18,7 +18,7 @@
     "native-base": "^2.13.12",
     "react": "16.9.0",
     "react-native": "0.61.5",
-    "react-native-background-task": "^0.2.1",
+    "react-native-background-timer": "^2.2.0",
     "react-native-camera": "^3.19.1",
     "react-native-check-box": "^2.1.7",
     "react-native-fs": "^2.16.6",
@@ -39,6 +39,12 @@
     "react-test-renderer": "16.9.0"
   },
   "jest": {
-    "preset": "react-native"
+    "setupFiles": [
+      "./jestSetup.js"
+    ],
+    "preset": "react-native",
+    "transformIgnorePatterns": [
+      "node_modules/(?!(jest-)?react-native|native-base-.*|@react-navigation/.*|react-(native|universal|navigation)-(.*)|@react-native-community/(.*)|@react-navigation/(.*)|bs-platform)"
+    ]
   }
 }

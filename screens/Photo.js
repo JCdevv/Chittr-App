@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {TouchableOpacity,Text,StyleSheet,View,Alert } from 'react-native';
 import { RNCamera } from 'react-native-camera';
-import AsyncStorage from '@react-native-community/async-storage';
+import Utils from '../utils/utils'
 
 class Photo extends Component {
   constructor(props){
@@ -11,11 +11,13 @@ class Photo extends Component {
     }
    }
 
+   /**
+  * When component loaded, get chit id
+  * for use in attaching image to chit later
+  */
    componentDidMount(){
-      let id = this.props.route.params.chit_id
-      console.log("ID passed is" + id)
+      const id = this.props.route.params.chit_id
       this.setState({chit_id : id})
-      
    }
 
    render() {
@@ -39,10 +41,13 @@ class Photo extends Component {
     );
   }
 
-  postPhoto(uri){
-    console.log(this.state.chit_id)
-    this.getToken().then((token) =>{
-      return fetch('http://10.0.2.2:3333/api/v0.0.5/chits/' + this.state.chit_id + '/photo',
+  /**
+  * postPhoto() takes image taken from camera and sends it to API
+  * for use in attaching with chit.
+  */
+  postPhoto(image){
+    Utils.getToken().then((token) =>{
+      return fetch(`http://10.0.2.2:3333/api/v0.0.5/chits/${this.state.chit_id}/photo`,
         {
           method: 'POST',
           headers: {
@@ -50,16 +55,16 @@ class Photo extends Component {
             'Content-Type': 'application/octet-stream',
             'X-Authorization' : token
           },
-          body: uri
+          body: image
         })
         .then((response) => {
           if(response.ok){
             
-            Alert.alert("Image Attached Successfully")
+            Alert.alert('Image Attached Successfully')
             this.props.navigation.navigate('Chits')
           }
           else{
-            Alert.alert("Image Failed To Be Posted, Please Try Again")
+            Alert.alert('Image Failed To Be Posted, Please Try Again')
           }
         })
         .catch((error) => {
@@ -68,25 +73,14 @@ class Photo extends Component {
       })
     }
 
-    async getToken(){
-      try {
-        let token = await AsyncStorage.getItem('token')
-        console.log("Token is!: " + token)
-        if(token !== null) {
-          return token
-        }
-        return token
-      } catch(e) {
-        console.error(e)
-      }
-    }
-  
-
+  /**
+  * Takes a picture using camera
+  */  
   takePicture = async() => {
     if (this.camera) {
       const options = { quality: 0.5, base64: true };
       const data = await this.camera.takePictureAsync(options);
-      console.log(data.uri);
+      console.log(data);
 
       this.postPhoto(data)
       
